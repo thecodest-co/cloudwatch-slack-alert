@@ -1,0 +1,23 @@
+service: cloudwatch-slack-alert
+frameworkVersion: '2'
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: 20201221
+  logRetentionInDays: 30
+  environment:
+    SLACK_WEBHOOK_URL: ${env:SLACK_WEBHOOK_URL}
+    SLACK_CHANNEL: ${env:SLACK_CHANNEL}
+    SLACK_USER: ${env:SLACK_USER}
+    SLACK_ICON: ${env:SLACK_ICON}
+
+plugins:
+  - serverless-offline
+  - serverless-offline-scheduler
+
+functions:
+  send-error-message:
+    handler: src/functions/cron/send-error-message.handler
+    events:
+      - schedule: rate(15 minutes)
