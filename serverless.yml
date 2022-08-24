@@ -1,6 +1,8 @@
 service: cloudwatch-slack-alert
 frameworkVersion: '2'
 
+useDotenv: true #delete
+
 provider:
   name: aws
   runtime: nodejs12.x
@@ -10,7 +12,9 @@ provider:
     SLACK_WEBHOOK_URL: ${env:SLACK_WEBHOOK_URL}
     SLACK_CHANNEL: ${env:SLACK_CHANNEL}
     SLACK_USER: ${env:SLACK_USER}
-    SLACK_ICON: ${env:SLACK_ICON}
+    LOG_GROUPS: ${env:LOG_GROUPS}
+    POLL_PERIOD_MS: ${env:POLL_PERIOD_MS}
+    FILTER_PATTERN: ${env:FILTER_PATTERN}
 
 plugins:
   - serverless-offline
@@ -20,4 +24,4 @@ functions:
   send-error-message:
     handler: src/functions/cron/send-error-message.handler
     events:
-      - schedule: rate(15 minutes)
+      - schedule: rate(5 minutes)

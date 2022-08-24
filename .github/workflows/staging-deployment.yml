@@ -1,0 +1,37 @@
+name: Build & deploy to staging
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ develop ]
+
+jobs:
+  build:
+    name: Build & Deploy
+    runs-on: ubuntu-latest
+    environment: staging
+
+    strategy:
+      matrix:
+        node-version: [ 14.x ]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install dependencies
+        run: npm install
+      - name: serverless deploy
+        uses: serverless/github-action@v2
+        with:
+          args: deploy --conceal --stage staging
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}
+          SLACK_USER: ${{ secrets.SLACK_USER }}
+          LOG_GROUPS: ${{ secrets.LOG_GROUPS }}
+          POLL_PERIOD_MS: ${{ secrets.POLL_PERIOD_MS }}
+          FILTER_PATTERN: ${{ secrets.FILTER_PATTERN }}

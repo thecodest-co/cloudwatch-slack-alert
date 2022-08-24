@@ -3,10 +3,10 @@ module.exports = {
 \`\`\`
 ${message}
 \`\`\``,
-    getPartialMessage: (timeStr, message, maxLength) => `*${timeStr}*${message.length === maxLength ? " [partial]" : ""}
+    getPartialMessage: (timeStr, message, maxLength) => `*${timeStr}*${message.length === maxLength ? ' [partial]' : ''}
 ${message}`,
-    getLogMessage: (group, partial, message) => `\`${group}${partial ? " [partial]" : ""}\`
+    getLogMessage: (group, partial, message) => `\`${group}${partial ? ' [partial]' : ''}\`
 \`\`\`
 ${message}
-\`\`\``
+\`\`\``,
 };

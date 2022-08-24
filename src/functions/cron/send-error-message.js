@@ -3,19 +3,19 @@ const { getTimeString, getLogsFromLogGroups } = require('../../helpers/cloudwatc
 const { getPartialMessage, getFaultMessage } = require('../../config/messages');
 
 exports.handler = async () => {
-    let checks = getLogsFromLogGroups();
-    let timeStr = getTimeString();
+    const groups = process.env.LOG_GROUPS.split(' ');
+
+    const checks = getLogsFromLogGroups(groups);
+    const timeStr = getTimeString();
 
     await Promise.all(await checks)
-        .then(messages => {
-            let valid = messages.filter(m => !!m);
+        .then((messages) => {
+            const valid = messages.filter((m) => !!m);
             if (valid.length === 0) return;
 
-            let maxLen = 4000 - timeStr.length - 14;
-            let msg = valid.join("\n\n").substring(0, maxLen);
-            return postMessage(getPartialMessage(timeStr, msg, maxLen));
+            const maxLen = 4000 - timeStr.length - 14;
+            const msg = valid.join('\n\n').substring(0, maxLen);
+            postMessage(getPartialMessage(timeStr, msg, maxLen)); // return?
         })
-        .catch(
-            e => postMessage(getFaultMessage(timeStr, e.message))
-        );
-}
+        .catch((e) => postMessage(getFaultMessage(timeStr, e.message)));
+};
