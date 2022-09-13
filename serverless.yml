@@ -1,8 +1,6 @@
 service: cloudwatch-slack-alert
 frameworkVersion: '2'
 
-useDotenv: true #delete
-
 provider:
   name: aws
   runtime: nodejs12.x
@@ -15,6 +13,11 @@ provider:
     LOG_GROUPS: ${env:LOG_GROUPS}
     POLL_PERIOD_MS: ${env:POLL_PERIOD_MS}
     FILTER_PATTERN: ${env:FILTER_PATTERN}
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "logs:FilterLogEvents"
+      Resource: "arn:aws:logs:us-east-1:*:log-group:/aws/lambda/*"
 
 plugins:
   - serverless-offline
@@ -23,5 +26,6 @@ plugins:
 functions:
   send-error-message:
     handler: src/functions/cron/send-error-message.handler
+    timeout: 15
     events:
       - schedule: rate(5 minutes)

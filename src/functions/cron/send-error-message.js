@@ -11,11 +11,13 @@ exports.handler = async () => {
     await Promise.all(await checks)
         .then((messages) => {
             const valid = messages.filter((m) => !!m);
-            if (valid.length === 0) return;
+            if (valid.length === 0) {
+                return;
+            }
 
             const maxLen = 4000 - timeStr.length - 14;
             const msg = valid.join('\n\n').substring(0, maxLen);
-            postMessage(getPartialMessage(timeStr, msg, maxLen)); // return?
+            postMessage(getPartialMessage(timeStr, msg, maxLen));
         })
         .catch((e) => postMessage(getFaultMessage(timeStr, e.message)));
 };
